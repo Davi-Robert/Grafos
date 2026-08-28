@@ -1,40 +1,85 @@
-#include "grafico_matriz.h"
+#include "./include/grafo_matriz.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-GrafoMatriz criar_grafo_matriz(int n){
+GrafoMatriz criar_grafo_matriz(unsigned int n){
     GrafoMatriz* grafo = malloc(sizeof(GrafoMatriz));
     grafo->n = n;
     grafo->adj = malloc(n * sizeof(int*));
     for(int i = 0; i < n; i++){
-        grafo->adj[n] = malloc(n * sizeof(int));
+        grafo->adj[i] = malloc(n * sizeof(int));
         for(int j = 0; j< n; j++){
             grafo->adj[i][j] = 0;
         }
     }
+    return *grafo;
 }
-void inserir_aresta_matriz(GrafoMatriz* grafo, int u, int v){
+int inserir_aresta_matriz(GrafoMatriz* grafo, unsigned int u, unsigned int v){
     if(u >= grafo->n || v >= grafo-> n){
-        printf("os valores vão além do tamanho do grafo");
-        return;
+        printf("os valores vão além do tamanho do grafo. O tamanho do grafo é de até %d", grafo->n - 1);
+        return 0;
     }
     grafo->adj[u][v] = 1;
     grafo->adj[v][u] = 1;
+    return 1;
 }
-void remover_aresta_matriz(GrafoMatriz* grafo, int u, int v){
+int remover_aresta_matriz(GrafoMatriz* grafo, unsigned int u, unsigned int v){
     if(u >= grafo->n || v >= grafo-> n){
-        printf("os valores vão além do tamanho do grafo");
-        return;
+        printf("os valores vão além do tamanho do grafo. O tamanho maximo do vertice é %d", grafo->n - 1);
+        return 0;
     }
     if(grafo->adj[u][v] == 1 && grafo->adj[v][u] == 1){
         grafo->adj[u][v] = 0;
         grafo->adj[v][u] = 0;
+        return 1;
     } else{
         printf("Essa aresta não existe");
+        return 0;
+    }
+    
+}
+int grau_matriz(GrafoMatriz* grafo, unsigned int vertice){
+    if(vertice >= grafo->n){
+    printf("o vertice vão além do tamanho do grafo. O tamanho maximo do vertice é %d", grafo->n - 1);
+    return -1;
+    }
+    int count_grau = 0;
+    for(int i = 0; i < grafo-> n; i ++){
+        if(grafo->adj[i][vertice] == 1) count_grau++;
+        if(grafo->adj[vertice][i] == 1) count_grau++;
+    }
+    return count_grau;
+}
+int sao_adjacentes_matriz(GrafoMatriz* grafo, unsigned int u, unsigned int v){
+    if(u >= grafo->n || v >= grafo-> n){
+        printf("os valores vão além do tamanho do grafo. O tamanho maximo do vertice é %d", grafo->n - 1);
+        return 0;
+    }
+    for(int i = 0; i < grafo->n; i++){
+        if(grafo->adj[u][v] == 1 || grafo->adj[u][v] == 1) return 1;
+    }
+    return 0;
+}
+void exibir_matriz(GrafoMatriz* grafo){
+    for(int i = 0; i < grafo-> n; i ++){
+       for(int j = 0; j < grafo-> n; j ++){
+        if(j == 0){
+            printf("[ %d ",grafo->adj[i][j]);
+        }else if(j == grafo->n -1){
+            printf(" %d ]",grafo->adj[i][j]);
+        }else{
+            printf(" %d ",grafo->adj[i][j]);
+        }
+       }
+       printf("\n");
     }
 
 }
-int grau_matriz(GrafoMatriz* grafo, int vertice);
-int sao_adjacentes_matriz(GrafoMatriz* grafo, int u, int v);
-void exibir(GrafoMatriz* grafo);
-void liberar_grafo_matriz(GrafoMatriz* grafo);
+void liberar_grafo_matriz(GrafoMatriz* grafo){
+    for(int i = 0; i < grafo->n; i++){
+        free(grafo->adj[grafo->n]);
+    }
+    free(grafo->adj);
+    grafo->adj = NULL;
+    grafo->n = 0;
+}
