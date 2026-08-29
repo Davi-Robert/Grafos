@@ -12,12 +12,11 @@ typedef struct {
     No **adj;
 } GrafoLista;
 
-GrafoLista criar_grafo_lista(int n);
-void inserir_aresta_lista(GrafoLista* grafo, int u, int v);
-void remover_aresta_lista(GrafoLista* grafo, int aresta);
+GrafoLista* criar_grafo_lista(int n);
+int inserir_aresta_lista(GrafoLista* grafo, int u, int v);
+int remover_aresta_lista(GrafoLista* grafo, int u, int v);
 int grau_lista(GrafoLista* grafo, int vertice);
 int sao_adjacentes_lista(GrafoLista* grafo, int u, int v);
-void exibir(GrafoLista* grafo);
-void liberar_grafo_lista(GrafoLista* grafo);
-
+void exibir_lista(GrafoLista* grafo);
+void liberar_grafo_lista(GrafoLista** grafo);
 #endif

@@ -1,7 +1,18 @@
-all: main.out matriz.o
+CC = gcc
+CFLAGS = -Wall -Wextra -Werror -std=c11 -Iinclude -lm
+TARGET = main
+SRC = src/*.c
+OBJ = *.o
 
-matriz.o:
-	gcc -c -lm -I include/ src/grafo_matriz.c -o obj/matriz.o
+all: $(TARGET)
 
-main.out:
-	gcc -lm -I include/ -o bin/run.out main.c obj/matriz.o
+$(TARGET): $(SRC)
+	$(CC) $(CFLAGS) -o $(TARGET) $(SRC)
+
+clean:
+	rm -f $(TARGET) $(OBJ)
+
+run: $(TARGET)
+	./$(TARGET)
+
+.PHONY: all clean run

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-GrafoMatriz* criar_grafo_matriz(unsigned int n){
+GrafoMatriz* criar_grafo_matriz(int n){
     GrafoMatriz* grafo = malloc(sizeof(GrafoMatriz));
     grafo->n = n;
     grafo->adj = malloc(n * sizeof(int*));
@@ -14,7 +14,7 @@ GrafoMatriz* criar_grafo_matriz(unsigned int n){
     }
     return grafo;
 }
-int inserir_aresta_matriz(GrafoMatriz* grafo, unsigned int u, unsigned int v){
+int inserir_aresta_matriz(GrafoMatriz* grafo, int u, int v){
     if(u >= grafo->n || v >= grafo-> n){
         printf("os valores vão além do tamanho do grafo. O tamanho do grafo é de até %d\n", grafo->n - 1);
         return -1;
@@ -26,7 +26,7 @@ int inserir_aresta_matriz(GrafoMatriz* grafo, unsigned int u, unsigned int v){
     grafo->adj[v][u] = 1;
     return 1;
 }
-int remover_aresta_matriz(GrafoMatriz* grafo, unsigned int u, unsigned int v){
+int remover_aresta_matriz(GrafoMatriz* grafo, int u, int v){
     if(u >= grafo->n || v >= grafo-> n){
         printf("os valores vão além do tamanho do grafo. O tamanho do grafo é de até %d\n", grafo->n - 1);
         return -1;
@@ -44,7 +44,7 @@ int remover_aresta_matriz(GrafoMatriz* grafo, unsigned int u, unsigned int v){
     }
     
 }
-int grau_matriz(GrafoMatriz* grafo, unsigned int vertice){
+int grau_matriz(GrafoMatriz* grafo, int vertice){
     if(vertice >= grafo->n){
         printf("o vertice vão além do tamanho do grafo. O tamanho maximo do vertice é %d\n", grafo->n - 1);
     return -1;
@@ -56,12 +56,11 @@ int grau_matriz(GrafoMatriz* grafo, unsigned int vertice){
     for(int i = 0; i < grafo-> n; i ++){
         if(grafo->adj[i][vertice] == 1) count_grau++;
         if(grafo->adj[vertice][i] == 1) count_grau++;
-        if(i == vertice && grafo->adj[i][vertice] == 1 ) count_grau--;
     }
     return count_grau;
 }
-int sao_adjacentes_matriz(GrafoMatriz* grafo, unsigned int u, unsigned int v){
-    if(u >= grafo->n || v >= grafo-> n){
+int sao_adjacentes_matriz(GrafoMatriz* grafo, int u, int v){
+    if(u >= grafo->n || v >= grafo->n){
         printf("os valores vão além do tamanho do grafo. O tamanho maximo do vertice é %d\n", grafo->n - 1);
         return -1;
     }
