@@ -1,5 +1,5 @@
-#include "grafo_matriz.h"
-#include "grafo_lista.h"
+#include "./include/grafo_matriz.h"
+#include "./include/grafo_lista.h"
 #include <stdio.h>
 
 int main(){

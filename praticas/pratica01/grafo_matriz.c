@@ -1,4 +1,4 @@
-#include "grafo_matriz.h"
+#include "./include/grafo_matriz.h"
 #include <stdio.h>
 #include <stdlib.h>
 
