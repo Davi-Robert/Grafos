@@ -1,4 +1,4 @@
-#include "grafo_lista.h"
+#include "./include/grafo_lista.h"
 #include <stdio.h>
 #include <stdlib.h>
 
