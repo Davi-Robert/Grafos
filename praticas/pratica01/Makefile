@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -std=c11 -Iinclude -lm
 TARGET = main
-SRC = src/*.c
+SRC = *.c
 OBJ = *.o
 
 all: $(TARGET)
