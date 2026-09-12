@@ -6,59 +6,38 @@
 
 Pilha* inicializar_pilha(int capacidade);
 
-void dfs_recursiva(GrafoLista *g, int u, int *visitado, Pilha *historico){
+int dfs_recursiva(GrafoLista *g, int u, int *visitado, Pilha *historico, int *entrada, int *saida, int tempo_entrada){
+    if(historico->topo == -1) tempo_entrada = 1;
+    int tempo_saida = 0;
+    entrada[u] = tempo_entrada;
     visitado[u] = 1;
     historico->dados[historico->topo++] = u;
     No* no = g->lista[u];
     while(no != NULL){
         int v = no->vertice;
-        if(!visitado[v]) dfs_recursiva(g,v,visitado,historico);
+        if(!visitado[v]) {
+            tempo_saida += dfs_recursiva(g,v,visitado,historico,entrada,saida, tempo_entrada++);
+        }
         no = no->prox;
     }
+    saida[u] = tempo_saida;
+    return tempo_saida + 1;
 }
 
-int eh_bipartido(GrafoLista *g){
-    int isBipartido = 1;
-    // valores da paridade
-    // -1 = não inicializado
-    // 0 = par
-    // 1 = impar
-    int paridade[g->n];
-    for(int i = 0; i < g->n; i++) paridade[i] = -1;
-    for(int i = 0; i < g->n; i++){
-        if(!isBipartido) break;
-        if(paridade[i] == -1) paridade[i] = 0;
-        No* no = g->lista[i];
-        while(no != NULL){
-            printf("%d -> ", no->vertice);
-            if(g->lista[i] == no){ no = no->prox; continue; }
-            else if(paridade[no->vertice] == -1){
-                if(paridade[i] == 0) paridade[no->vertice] = 1;
-                if(paridade[i] == 1) paridade[no->vertice] = 0;
-            }else if(paridade[i] == 1){
-                printf("aqui\n");
-                // printf("1: %d | %d |\n",i, paridade[no->vertice]);
-                if(paridade[no->vertice] == 1) { isBipartido = 0; break; }
-            }else if(paridade[i] == 0){
-                // printf("1: %d | %d \n",i, paridade[no->vertice]);
-                if(paridade[no->vertice] == 0) { isBipartido = 0; break; }
-            }
-            no = no->prox;
+int contar_componentes(GrafoLista *g, int u, Pilha* p){
+    int visitado[g->n];
+    int num_componentes = 0;
+    for (int i = 0; i < g->n; i++) {
+        if (!visitado[i]) {
+            num_componentes++;
+            dfs_recursiva(g, i, p);
         }
-        puts("");
     }
-    for(int i = 0; i < g->n; i ++){
-        printf("%d: [%d] | ", i, paridade[i]);
-    }
-    puts("");
-    return isBipartido;
-}
-
-int contar_componentes(GrafoLista *g){
-    return g->n;
+    return num_componentes;
 }
 
 int tem_ciclo(GrafoLista *g){
+    printf("tem_ciclo não implementada");
     return g->n;
 }
 

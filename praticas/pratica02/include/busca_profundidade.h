@@ -12,7 +12,7 @@ typedef struct {
 Pilha* inicializar_pilha(int capacidade);
 void exibir_pilha(Pilha* pilha);
 
-void dfs_recursiva(GrafoLista *g, int u, int *visitado, Pilha *historico);
+int dfs_recursiva(GrafoLista *g, int u, int *visitado, Pilha *historico, int *entrada, int *saida, int tempo_entrada);
 int contar_componentes(GrafoLista *g);
 int tem_ciclo(GrafoLista *g);
 

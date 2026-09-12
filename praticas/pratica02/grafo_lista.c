@@ -4,6 +4,10 @@
 
 GrafoLista* criar_grafo(int n){
     GrafoLista* grafo = malloc(sizeof(GrafoLista));
+    if(!grafo){
+        perror("erro ao aloca memória para o grafo");
+        exit(EXIT_FAILURE);
+    }
     grafo->lista = malloc(n * sizeof(No*));
     grafo->n = n;
     for(int i = 0; i < n; i ++){
@@ -12,17 +16,18 @@ GrafoLista* criar_grafo(int n){
     return grafo;
 }
 int inserir_aresta(GrafoLista* grafo, int u, int v){
+    if(u == 0 || v == 0){printf("não pode inserir vertices menores que 1\n"); return -1;}
     No* aux;
-    No* vertice = malloc(sizeof(No));
+    No* vertice = (No*)malloc(sizeof(No));
     vertice->vertice = v;
     vertice->prox = NULL;
     int next_null = -1;
-    for(int i = 0;  i < grafo->n; i++){
-        if(grafo->lista[i] == NULL){
-            if(next_null == -1) next_null = i;
+    for(int i = 1;  i < grafo->n; i++){
+        if(grafo->lista[i - 1] == NULL){
+            if(next_null == -1) next_null = i - 1;
         }else{
-            if(grafo->lista[i]->vertice == u){
-                aux = grafo->lista[i];
+            if(grafo->lista[i - 1]->vertice == u){
+                aux = grafo->lista[i - 1];
                 while (aux->prox != NULL){
                     if(aux->vertice == v) {
                         printf("Essa aresta já existe");
