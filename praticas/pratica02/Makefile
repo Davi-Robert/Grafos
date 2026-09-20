@@ -5,6 +5,8 @@ SRC = *.c
 OBJ = *.o
 
 all: $(TARGET)
+	$(CC) $(CFLAGS) -o $(TARGET) $(SRC)
+
 
 $(TARGET): $(SRC)
 	$(CC) $(CFLAGS) -o $(TARGET) $(SRC)
@@ -14,5 +16,8 @@ clean:
 
 run: $(TARGET)
 	./$(TARGET)
+
+debug:
+	$(CC) -g $(CFLAGS) -o $(TARGET) $(SRC)
 
 .PHONY: all clean run

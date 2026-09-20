@@ -3,131 +3,164 @@
 #include <stdlib.h>
 
 GrafoLista* criar_grafo(int n){
+    if (n <= 0) return NULL;
     GrafoLista* grafo = malloc(sizeof(GrafoLista));
     if(!grafo){
-        perror("erro ao aloca memória para o grafo");
+        perror("erro ao alocar memória para o grafo");
         exit(EXIT_FAILURE);
     }
     grafo->lista = malloc(n * sizeof(No*));
+    if(!grafo->lista){
+        perror("erro ao alocar memória para a lista de adjacência");
+        free(grafo);
+        exit(EXIT_FAILURE);
+    }
     grafo->n = n;
-    for(int i = 0; i < n; i ++){
+    for(int i = 0; i < n; i++){
         grafo->lista[i] = NULL;
     }
     return grafo;
 }
+
 int inserir_aresta(GrafoLista* grafo, int u, int v){
-    if(u == 0 || v == 0){printf("não pode inserir vertices menores que 1\n"); return -1;}
-    No* aux;
-    No* vertice = (No*)malloc(sizeof(No));
-    vertice->vertice = v;
-    vertice->prox = NULL;
-    int next_null = -1;
-    for(int i = 1;  i < grafo->n; i++){
-        if(grafo->lista[i - 1] == NULL){
-            if(next_null == -1) next_null = i - 1;
-        }else{
-            if(grafo->lista[i - 1]->vertice == u){
-                aux = grafo->lista[i - 1];
-                while (aux->prox != NULL){
-                    if(aux->vertice == v) {
-                        printf("Essa aresta já existe");
-                        free(vertice);
-                        return -1;
-                    }
-                    aux = aux->prox;
-                }
-                aux->prox = vertice;
-                return 1;
+    if(!grafo || !grafo->lista){
+        printf("Grafo inválido ou não inicializado.\n");
+        return -1;
+    }
+
+    if(u < 1 || u > grafo->n || v < 1 || v > grafo->n){
+        printf("não pode inserir vertices menores que 1 ou maiores que %d\n", grafo->n);
+        return -1;
+    }
+    No* aux = grafo->lista[u - 1];
+    while(aux != NULL){
+        if(aux->vertice == v){
+            printf("Essa aresta já existe (%d, %d)\n", u, v);
+            return -1;
+        }
+        aux = aux->prox;
+    }
+
+    No* no_v = (No*)malloc(sizeof(No));
+    if(!no_v){
+        perror("Erro ao alocar memória para o nó");
+        return -1;
+    }
+    no_v->vertice = v;
+    no_v->prox = NULL;
+
+    if(grafo->lista[u - 1] == NULL){
+        grafo->lista[u - 1] = no_v;
+    } else {
+        No* aux = grafo->lista[u - 1];
+        while(aux->prox != NULL){
+            aux = aux->prox;
+        }
+        aux->prox = no_v;
+    }
+
+    if(u != v){
+        No* novo_u = (No*)malloc(sizeof(No));
+        if(!novo_u){
+            perror("Erro ao alocar memória para o nó");
+            return -1;
+        }
+        novo_u->vertice = u;
+        novo_u->prox = NULL;
+
+        if(grafo->lista[v - 1] == NULL){
+            grafo->lista[v - 1] = novo_u;
+        } else {
+            No* aux = grafo->lista[v - 1];
+            while(aux->prox != NULL){
+                aux = aux->prox;
             }
+            aux->prox = novo_u;
         }
     }
-    if(next_null != -1){
-        No* vertice_inicio = malloc(sizeof(No));
-        vertice_inicio->vertice = u;
-        vertice_inicio->prox = vertice;
-        grafo->lista[next_null] = vertice_inicio;
-        
-        return 1;
-    }
-    free(vertice);
-    return -1;
+
+    return 1;
 }
+
 int remover_aresta(GrafoLista* grafo, int u, int v){
-    No *aux, *aux2;
-    for(int i = 0;  i < grafo->n; i++){
-        if(grafo->lista[i] != NULL){
-            if(grafo->lista[i]->vertice == u){
-                aux = grafo->lista[i];
-                if(aux->vertice == v){
-                    grafo->lista[i] = aux->prox;
-                    free(aux);
-                    return 1;
-                }
-                while (aux->prox != NULL){
-                    if(aux->prox->vertice == v){
-                        aux2 = aux->prox;
-                        aux->prox = aux->prox->prox;
-                        free(aux2);
-                        return 1;
-                    }
-                    aux = aux->prox;
-                }
-                return 1;
+    if(!grafo || !grafo->lista) return -1;
+    if(u < 1 || u > grafo->n || v < 1 || v > grafo->n) return -1;
+
+    int removido = 0;
+
+    // Remover v da lista de u
+    No* aux = grafo->lista[u - 1];
+    No* prev = NULL;
+    while(aux != NULL){
+        if(aux->vertice == v){
+            if(prev == NULL){
+                grafo->lista[u - 1] = aux->prox;
+            } else {
+                prev->prox = aux->prox;
             }
+            free(aux);
+            removido = 1;
+            break;
         }
+        prev = aux;
+        aux = aux->prox;
     }
-    return -1;
-}
-int grau(GrafoLista* grafo, int vertice){
-    No* aux;
-    int count_grau = 0;
-    for(int i = 0;  i < grafo->n; i++){
-        aux = grafo->lista[i];
-        while (aux){
-            if(grafo->lista[i]->vertice == vertice){
-                count_grau++;
-                if(grafo->lista[i] == aux)count_grau--;
-            }else if(aux->vertice == vertice){
-                count_grau++;
+
+    // Se u != v, remover u da lista de v
+    if(u != v){
+        aux = grafo->lista[v - 1];
+        prev = NULL;
+        while(aux != NULL){
+            if(aux->vertice == u){
+                if(prev == NULL){
+                    grafo->lista[v - 1] = aux->prox;
+                } else {
+                    prev->prox = aux->prox;
+                }
+                free(aux);
+                removido = 1;
+                break;
             }
+            prev = aux;
             aux = aux->prox;
         }
     }
-    return count_grau;
+
+    return removido ? 1 : -1;
+}
+
+int grau(GrafoLista* grafo, int vertice){
+    if(!grafo || !grafo->lista || vertice < 1 || vertice > grafo->n) return 0;
+    int count = 0;
+    No* aux = grafo->lista[vertice - 1];
+    while(aux != NULL){
+        count++;
+        aux = aux->prox;
+    }
+    return count;
 }
 
 int sao_adjacentes(GrafoLista* grafo, int u, int v){
-    No* aux;
-    for(int i = 0;  i < grafo->n; i++){
-        if(i == u || i == v){
-            aux = grafo->lista[i];
-            while(aux){
-                if(aux->vertice == v){
-                    printf("Os vertices %d e %d são adjacentes\n",u,v);
-                    return 1;
-                }
-                aux = aux->prox;
-            }
+    if(!grafo || !grafo->lista || u < 1 || u > grafo->n || v < 1 || v > grafo->n) return 0;
+    No* aux = grafo->lista[u - 1];
+    while(aux != NULL){
+        if(aux->vertice == v){
+            printf("Os vertices %d e %d são adjacentes\n", u, v);
+            return 1;
         }
+        aux = aux->prox;
     }
-    printf("Os vertices %d e %d não são adjacentes\n",u,v);
-    return -1;
+    printf("Os vertices %d e %d não são adjacentes\n", u, v);
+    return 0;
 }
 
-
 void exibir(GrafoLista* grafo){
-    No* aux;
-    for(int i = 0; i < grafo-> n; i ++){
-        aux = grafo->lista[i];
-        if(aux == NULL){
-            printf("[ NULL ]\n");
-            continue;
-        }else{
-            printf("[ %d ] -> ", aux->vertice);
-            aux = aux->prox;
-        }
-        while (aux){
-            printf("%d -> ",aux->vertice);
+    if(!grafo || !grafo->lista) return;
+    for(int i = 0; i < grafo->n; i++){
+        printf("[%d] -> ", i + 1);
+        No* aux = grafo->lista[i];
+        while(aux != NULL){
+            printf("%d -> ", aux->vertice);
             aux = aux->prox;
         }
         printf("NULL\n");
@@ -136,15 +169,16 @@ void exibir(GrafoLista* grafo){
 }
 
 void liberar_cadeia_nos(No* no){
-    if(!no){
-        return;
+    while(no != NULL){
+        No* temp = no;
+        no = no->prox;
+        free(temp);
     }
-    liberar_cadeia_nos(no->prox);
-    free(no);
 }
 
 void liberar_grafo(GrafoLista** grafo){
-    for(int i = 0; i < (*grafo)->n ; i++){
+    if(!grafo || !*grafo) return;
+    for(int i = 0; i < (*grafo)->n; i++){
         liberar_cadeia_nos((*grafo)->lista[i]);
     }
     free((*grafo)->lista);
