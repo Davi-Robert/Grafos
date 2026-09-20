@@ -1,6 +1,6 @@
 #include "./include/grafo_lista.h"
 #include "./include/busca_profundidade.h"
-#include "busca_largura.h"
+#include "./include/busca_largura.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -60,7 +60,7 @@ int main()
     for(int i = 0; i < grafo->n; i++){
 
     }
-    
+
     if (eh_bipartido(grafo)){
         printf("O grafo é bipartido\n");
     }else{

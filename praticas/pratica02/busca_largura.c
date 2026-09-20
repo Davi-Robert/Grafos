@@ -1,9 +1,8 @@
-#include "grafo_lista.h"
-#include "busca_largura.h"
+#include "./include/grafo_lista.h"
+#include "./include/busca_largura.h"
 
 #include<stdio.h>
 #include<stdlib.h>
-
 
 
 Fila* inicializar_fila(int n);
@@ -62,7 +61,6 @@ void bfs(GrafoLista *g, int origem, int *dist, int *pred){
 }
 
 int eh_bipartido(GrafoLista *g){
-    if(!g) return 0;
     int isBipartido = 1;
     // valores da paridade
     // -1 = não inicializado
@@ -72,23 +70,28 @@ int eh_bipartido(GrafoLista *g){
     for(int i = 0; i < g->n; i++) paridade[i] = -1;
     for(int i = 0; i < g->n; i++){
         if(!isBipartido) break;
-        if(g->lista[i] == NULL) continue;
         if(paridade[i] == -1) paridade[i] = 0;
         No* no = g->lista[i];
         while(no != NULL){
-            int neighbor = no->vertice - 1;
-            if(paridade[neighbor] == -1){
-                paridade[neighbor] = 1 - paridade[i];
-            } else if(paridade[neighbor] == paridade[i]){
-                isBipartido = 0;
-                break;
+            printf("%d -> ", no->vertice);
+            if(g->lista[i] == no){ no = no->prox; continue; }
+            else if(paridade[no->vertice] == -1){
+                if(paridade[i] == 0) paridade[no->vertice - 1] = 1;
+                if(paridade[i] == 1) paridade[no->vertice - 1] = 0;
+            }else if(paridade[i] == 1){
+                // printf("1: %d | %d |\n",i, paridade[no->vertice]);
+                if(paridade[no->vertice - 1] == 1) { isBipartido = 0; break; }
+            }else if(paridade[i] == 0){
+                // printf("1: %d | %d \n",i, paridade[no->vertice]);
+                if(paridade[no->vertice - 1] == 0) { isBipartido = 0; break; }
             }
             no = no->prox;
         }
+        puts("");
     }
     printf("\nParidade dos vertices: \n");
     for(int i = 0; i < g->n; i ++){
-        printf("%d: [%d] | ", i + 1, paridade[i]);
+        printf("%d: [%d] | ", i, paridade[i]);
     }
     puts("");
     return isBipartido;

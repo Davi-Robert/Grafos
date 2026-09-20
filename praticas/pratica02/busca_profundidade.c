@@ -1,5 +1,5 @@
-#include "grafo_lista.h"
-#include "busca_profundidade.h"
+#include "./include/grafo_lista.h"
+#include "./include/busca_profundidade.h"
 
 #include<stdio.h>
 #include<stdlib.h>
