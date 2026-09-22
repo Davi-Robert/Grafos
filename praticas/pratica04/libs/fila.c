@@ -37,6 +37,7 @@ int dequeue(Fila* fila){
     No* aux = fila->dados;
     fila->dados = fila->dados->prox;
     int dado = aux->vertice;
+    if(fila->dados == NULL) fila->fim = NULL;
     free(aux);
 
     fila->tamanho--;
@@ -48,7 +49,7 @@ int dequeue(Fila* fila){
 
 int front(Fila* fila){
     if(!fila){printf("Fila não recebida");return -1;}
-    if(fila->tamanho <= 0){printf("A fila esta vazia!\n");return -1;}
+    if(fila->tamanho <= 0){return -1;}
     return fila->front;
 }
 
