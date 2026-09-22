@@ -199,6 +199,7 @@ void exibir(GrafoLista* grafo){
         }
         printf("[NULL]\n");        
     }
+    puts("");
 }
 // void resetar_cor(GrafoLista* grafo){
 //     if(!grafo)return;

@@ -10,5 +10,7 @@ int dfs_recursiva(GrafoLista* grafo, int u, int* visitado, Pilha* pilha, int* te
 void bfs(GrafoLista *grafo, int u, int *visitado, int *distancia, int* predecessor);
 
 int eh_bipartido(GrafoLista* grafo);
+int tem_circulo(GrafoLista* grafo);
+int contar_componentes(GrafoLista* grafo);
 
 #endif

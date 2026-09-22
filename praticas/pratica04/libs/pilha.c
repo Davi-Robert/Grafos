@@ -39,7 +39,7 @@ int pop(Pilha* pilha){
 
 int top(Pilha* pilha){
     if(!pilha){printf("Pilha não recebida");return -1;}
-    if(pilha->tamanho <= 0){printf("A pilha esta vazia!\n");return -1;}
+    if(pilha->tamanho <= 0){return -1;}
     return pilha->topo;
 }
 
