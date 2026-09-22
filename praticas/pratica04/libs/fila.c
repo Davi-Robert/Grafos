@@ -1,5 +1,5 @@
-#include "./include/grafo_lista.h"
-#include "./include/fila.h"
+#include "../include/grafo_lista.h"
+#include "../include/fila.h"
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -59,7 +59,7 @@ void liberar_fila(Fila **fila){
     while(aux){
         aux2 = aux;
         aux = aux->prox;
-        free(aux);
+        free(aux2);
     }
     free((*fila));
     fila = NULL;

@@ -1,5 +1,5 @@
-#include "./include/grafo_lista.h"
-#include "./include/pilha.h"
+#include "../include/grafo_lista.h"
+#include "../include/pilha.h"
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -50,7 +50,7 @@ void liberar_pilha(Pilha **pilha){
     while(aux){
         aux2 = aux;
         aux = aux->prox;
-        free(aux);
+        free(aux2);
     }
     free((*pilha));
     pilha = NULL;
