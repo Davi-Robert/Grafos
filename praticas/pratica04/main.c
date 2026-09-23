@@ -4,36 +4,13 @@
 #include "./include/pilha.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #define DEFAULT_LENGTH 6
 
-void write_dot_file(GrafoLista *g, int eh_ordenado){
-    if(!g)return;
-    FILE* fp = fopen("grafo_direcionado.dot","w");
-    if(!fp){
-        perror("falha ao abrir o arquivo grafo_direcionado.dot");
-        return;
-    }
-
-    if(eh_ordenado == 1)fprintf(fp,"digraph G1 {\n");
-    else fprintf(fp,"graph G1 {\n");
-    for(int i = 0; i < g->capacidade; i++){
-        if(g->lista[i] == NULL) continue;
-        fprintf(fp,"\t%d [shape=\"circle\"]\n", i+1);
-    }
-    for(int i = 0; i < g->capacidade; i++){
-        No* aux = g->lista[i];
-        while(aux != NULL){
-            if(i + 1 < aux->vertice){
-                if(eh_ordenado == 1) fprintf(fp,"\t%d -> %d\n", i + 1, aux->vertice);
-                else fprintf(fp,"\t%d -- %d\n", i + 1, aux->vertice);
-            }
-            aux = aux->prox;
-        }
-    }
-    fprintf(fp,"}\n");
-    fclose(fp);
-}
+void write_dot_file(GrafoLista *g, int eh_ordenado);
+void liberar_lista(No** no, int tamanho);
+void exibir_lista(No** lista, int tamanho);
 
 
 int main(){
@@ -60,6 +37,8 @@ int main(){
     matriz_inserir_aresta(grafo_matriz,2,3);
 
     matriz_exibir(grafo_matriz);
+
+    matriz_liberar_grafo(&grafo_matriz);
 
 
     GrafoLista* grafo_direcionado = criar_grafo(DEFAULT_LENGTH, 1);
@@ -179,9 +158,120 @@ int main(){
 
     printf("\n\n---------------------------- Pratica 03 ----------------------------\n\n");
 
+    eh_dag(grafo_direcionado)?printf("O grafo direcionado é DAG\n"):printf("O grafo direcionado não é DAG\n");
+    
+    GrafoLista* grafo_direcionado2 = criar_grafo(DEFAULT_LENGTH,1);
+    
+    inserir_arco(grafo_direcionado2,1,4);
+    inserir_arco(grafo_direcionado2,1,2);
+    inserir_arco(grafo_direcionado2,3,5);
+    inserir_arco(grafo_direcionado2,3,1);
+    inserir_arco(grafo_direcionado2,4,2);
+    inserir_arco(grafo_direcionado2,5,6);
+    inserir_arco(grafo_direcionado2,5,4);
+    inserir_arco(grafo_direcionado2,6,2);
+
+    printf("Segundo Grafo Direcionado:\n");
+    exibir(grafo_direcionado2);
+    
+    eh_dag(grafo_direcionado2)?printf("O segundo grafo direcionado é DAG\n"):printf("O segund grafo direcionado não é DAG\n");
+
+    printf("\nORDENAÇÃO TOPOLOGICA DFS:\n\n");
+    
+    printf("Primeiro grafo direcionado:\n");
+    No** ordenacao_dfs1 = ordenacao_topologica_dfs(grafo_direcionado);
+    if(!ordenacao_dfs1)printf("O grafo possui um circulo\n");
+    else exibir_lista(ordenacao_dfs1, grafo_direcionado->capacidade);
+    
+    printf("Segundo grafo direcionado:\n");
+    No** ordenacao_dfs2 = ordenacao_topologica_dfs(grafo_direcionado2);
+    if(!ordenacao_dfs2)printf("O grafo possui um circulo");
+    else exibir_lista(ordenacao_dfs2, grafo_direcionado2->capacidade);
+
+    printf("ORDENAÇÃO TOPOLOGICA COM ALGORTIMO DE KAHN (BFS):\n");
+    
+    printf("Primeiro grafo direcionado:\n");
+    int* ordenacao_kahn1 = ordenacao_topologica_kahn(grafo_direcionado);
+    if(!ordenacao_kahn1)printf("O grafo possui um circulo\n");
+    else for(int i = 0; i < grafo_direcionado->capacidade; i++) printf("[%d]",ordenacao_kahn1[i]);
+    puts("");
+    
+    printf("Segundo grafo direcionado:\n");
+    int* ordenacao_kahn2 = ordenacao_topologica_kahn(grafo_direcionado2);
+    if(!ordenacao_kahn2)printf("O grafo possui um circulo");
+    else for(int i = 0; i < grafo_direcionado2->capacidade; i++) printf("[%d]",ordenacao_kahn2[i]);
+    puts("");
+    
+
+
     liberar_grafo(&grafo_direcionado);
     liberar_grafo(&grafo_nao_direcionado);
     liberar_grafo(&grafo_nao_direcionado2);
 
     return 0;
+}
+
+
+
+
+
+
+
+
+
+
+void write_dot_file(GrafoLista *g, int eh_ordenado){
+    if(!g)return;
+    FILE* fp = fopen("grafo_direcionado.dot","w");
+    if(!fp){
+        perror("falha ao abrir o arquivo grafo_direcionado.dot");
+        return;
+    }
+
+    if(eh_ordenado == 1)fprintf(fp,"digraph G1 {\n");
+    else fprintf(fp,"graph G1 {\n");
+    for(int i = 0; i < g->capacidade; i++){
+        if(g->lista[i] == NULL) continue;
+        fprintf(fp,"\t%d [shape=\"circle\"]\n", i+1);
+    }
+    for(int i = 0; i < g->capacidade; i++){
+        No* aux = g->lista[i];
+        while(aux != NULL){
+            if(i + 1 < aux->vertice){
+                if(eh_ordenado == 1) fprintf(fp,"\t%d -> %d\n", i + 1, aux->vertice);
+                else fprintf(fp,"\t%d -- %d\n", i + 1, aux->vertice);
+            }
+            aux = aux->prox;
+        }
+    }
+    fprintf(fp,"}\n");
+    fclose(fp);
+}
+
+void liberar_lista(No** no, int tamanho){
+    if(!no)return;
+    if(tamanho <= 0 ){printf("Tamanho da lista não pode ser menor que zero");return;}
+    No* aux, *delete;
+    for(int i = 0; i < tamanho; i++){
+        aux = no[i];
+        while(aux){
+            delete = aux;
+            aux = aux->prox;
+            free(delete);
+        }
+    }
+    free(no);
+}
+
+void exibir_lista(No** lista, int tamanho){
+    for(int i = 0; i < tamanho; i++){
+            No* aux = lista[i];
+            printf("%d: ",i+1);
+            while(aux){
+                printf("[%d] -> ", aux->vertice);
+                aux = aux->prox;
+            }
+            printf("[NULL]\n");
+        }
+        puts("");
 }

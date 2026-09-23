@@ -37,12 +37,16 @@ int dequeue(Fila* fila){
     No* aux = fila->dados;
     fila->dados = fila->dados->prox;
     int dado = aux->vertice;
-    if(fila->dados == NULL) fila->fim = NULL;
     free(aux);
-
+    
     fila->tamanho--;
-    if(fila->dados != NULL)fila->front = fila->dados->vertice;
-    else fila->front = 0;
+    if(fila->dados != NULL){
+        fila->front = fila->dados->vertice;
+    }
+    else{
+        fila->fim = NULL;
+        fila->front = 0;
+    }
 
     return dado;
 }

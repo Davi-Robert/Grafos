@@ -80,6 +80,6 @@ void matriz_liberar_grafo(GrafoMatriz** grafo){
         free((*grafo)->matriz[i]);
     }
     free((*grafo)->matriz);
-    free(grafo);
+    free(*grafo);
     grafo = NULL;
 }

@@ -24,4 +24,9 @@ void exibir(GrafoLista* grafo);
 // void resetar_cor(GrafoLista* grafo);
 void liberar_grafo(GrafoLista** grafo);
 
+int eh_dag(GrafoLista *grafo);
+int* ordenacao_topologica_kahn(GrafoLista *grafo);
+No** ordenacao_topologica_dfs(GrafoLista *grafo);
+
+
 #endif
