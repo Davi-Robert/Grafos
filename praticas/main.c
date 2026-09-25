@@ -237,7 +237,41 @@ int main(){
         puts("");
     }
 
+    printf("\nDETECTAR PONTES\n");
+    No** pontes = detectar_pontes(grafo_nao_direcionado);
+    printf("Pontes no grafo nao direcionado:\n");
+    if(pontes){
+        for(int i = 0; i < grafo_nao_direcionado->capacidade; i++){
+            if(pontes[i]){
+                printf("Ponte: (%d, %d)\n", pontes[i]->vertice, pontes[i]->prox->vertice);
+            }
+        }
+        liberar_lista(pontes, grafo_nao_direcionado->capacidade);
+    }
 
+    printf("\nPLANARIDADE (EULER / KURATOWSKI)\n");
+    if(eh_planar_euler(grafo_nao_direcionado)){
+        printf("O primeiro grafo nao direcionado eh planar.\n");
+    } else {
+        printf("O primeiro grafo nao direcionado nao eh planar.\n");
+    }
+
+    GrafoLista* grafo_planar_12 = criar_grafo(12, 0);
+    for(int i = 1; i < 12; i++){
+        inserir_aresta(grafo_planar_12, i, i + 1);
+    }
+
+    inserir_aresta(grafo_planar_12, 1, 3);
+    inserir_aresta(grafo_planar_12, 3, 5);
+    inserir_aresta(grafo_planar_12, 5, 7);
+    inserir_aresta(grafo_planar_12, 7, 9);
+    inserir_aresta(grafo_planar_12, 9, 11);
+
+    if(eh_planar_euler(grafo_planar_12)){
+        printf("O grafo nao direcionado com 12 vertices eh planar.\n");
+    } else {
+        printf("O grafo nao direcionado com 12 vertices nao eh planar.\n");
+    }
 
     for(int i = 0; i < TAMANHO_GRAFO3; i++){
         free(componentes[i]);
@@ -245,8 +279,11 @@ int main(){
     free(componentes);
     free(low);
     liberar_grafo(&grafo_direcionado);
+    liberar_grafo(&grafo_direcionado2);
+    liberar_grafo(&grafo_direcionado3);
     liberar_grafo(&grafo_nao_direcionado);
     liberar_grafo(&grafo_nao_direcionado2);
+    liberar_grafo(&grafo_planar_12);
 
     return 0;
 }
