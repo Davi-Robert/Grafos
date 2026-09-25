@@ -27,6 +27,8 @@ int eh_dag(GrafoLista *grafo);
 int* ordenacao_topologica_kahn(GrafoLista *grafo);
 No** ordenacao_topologica_dfs(GrafoLista *grafo);
 
-
+void coloracao_gulosa(GrafoLista *grafo, int *num_cores); // — ordenação arbitrária.
+void coloracao_welsh_powell(GrafoLista *grafo, int *num_cores);// — ordena por grau decrescente.
+int eh_bipartido2(GrafoLista *grafo); // — caso especial (2-coloração = número cromático 2).
 
 #endif

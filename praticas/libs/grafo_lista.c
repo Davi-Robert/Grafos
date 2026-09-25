@@ -360,11 +360,146 @@ No** ordenacao_topologica_dfs(GrafoLista *grafo){
     return lista;
 }
 
+// ---------------------------------------- funções pratica 05 ----------------------------------------
+
+void coloracao_gulosa(GrafoLista *grafo, int *num_cores) {
+    if (!grafo) return;
+    int n = grafo->capacidade;
+    int *cores = (int*)calloc(n, sizeof(int));
+    int max_cor = 0;
+    
+    for (int i = 0; i < n; i++) {
+        int *cores_vizinhas = (int*)calloc(n + 1, sizeof(int));
+        
+        No *aux = grafo->lista[i];
+        while (aux) {
+            int vizinho = aux->vertice - 1;
+            if (cores[vizinho] != 0) {
+                cores_vizinhas[cores[vizinho]] = 1;
+            }
+            aux = aux->prox;
+        }
+        
+        int cor = 1;
+        while (cor <= n && cores_vizinhas[cor]) {
+            cor++;
+        }
+        
+        cores[i] = cor;
+        if (cor > max_cor) max_cor = cor;
+        free(cores_vizinhas);
+    }
+    
+    if (num_cores) *num_cores = max_cor;
+    free(cores);
+}
+
+void coloracao_welsh_powell(GrafoLista *grafo, int *num_cores) {
+    if (!grafo) return;
+    int n = grafo->capacidade;
+    
+    int *graus = (int*)calloc(n, sizeof(int));
+    int *vertices = (int*)calloc(n, sizeof(int));
+    int *cores = (int*)calloc(n, sizeof(int));
+    
+    for (int i = 0; i < n; i++) {
+        vertices[i] = i;
+        int count = 0;
+        No *aux = grafo->lista[i];
+        while (aux) {
+            count++;
+            aux = aux->prox;
+        }
+        graus[i] = count;
+    }
+    
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (graus[vertices[j]] < graus[vertices[j + 1]]) {
+                int temp = vertices[j];
+                vertices[j] = vertices[j + 1];
+                vertices[j + 1] = temp;
+            }
+        }
+    }
+    
+    int cor_atual = 1;
+    int coloridos = 0;
+    
+    while (coloridos < n) {
+        int atribuiu_cor = 0;
+        for (int i = 0; i < n; i++) {
+            int v = vertices[i];
+            if (cores[v] == 0) {
+                int pode_colorir = 1;
+                No *aux = grafo->lista[v];
+                while (aux) {
+                    int vizinho = aux->vertice - 1;
+                    if (cores[vizinho] == cor_atual) {
+                        pode_colorir = 0;
+                        break;
+                    }
+                    aux = aux->prox;
+                }
+                if (pode_colorir) {
+                    cores[v] = cor_atual;
+                    coloridos++;
+                    atribuiu_cor = 1;
+                }
+            }
+        }
+        if (atribuiu_cor) {
+            if (coloridos < n) cor_atual++;
+        } else {
+            break;
+        }
+    }
+    
+    if (num_cores) *num_cores = cor_atual;
+    
+    free(graus);
+    free(vertices);
+    free(cores);
+}
+
+int eh_bipartido2(GrafoLista *grafo) {
+    if (!grafo) return 0;
+    int n = grafo->capacidade;
+    int *cor = (int*)calloc(n, sizeof(int));
+    
+    for (int i = 0; i < n; i++) {
+        if (cor[i] == 0) {
+            cor[i] = 1;
+            int *fila = (int*)malloc(n * sizeof(int));
+            int inicio = 0, fim = 0;
+            fila[fim++] = i;
+            
+            while (inicio < fim) {
+                int u = fila[inicio++];
+                No *aux = grafo->lista[u];
+                while (aux) {
+                    int v = aux->vertice - 1;
+                    if (cor[v] == 0) {
+                        cor[v] = (cor[u] == 1) ? 2 : 1;
+                        fila[fim++] = v;
+                    } else if (cor[v] == cor[u]) {
+                        free(fila);
+                        free(cor);
+                        return 0; // Não é bipartido
+                    }
+                    aux = aux->prox;
+                }
+            }
+            free(fila);
+        }
+    }
+    
+    free(cor);
+    return 1; // É bipartido
+}
 
 
-
-
-// // ---------------------------------------- funções auxiliares ----------------------------------------
+// ---------------------------------------- funções auxiliares ----------------------------------------
 
 
 No* duplicar_no(No* no){

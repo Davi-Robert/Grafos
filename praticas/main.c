@@ -273,6 +273,49 @@ int main(){
         printf("O grafo nao direcionado com 12 vertices nao eh planar.\n");
     }
 
+    printf("\n\n---------------------------- Pratica 05 ----------------------------\n\n");
+
+    GrafoLista* grafo_coloracao = criar_grafo(5, 0); // Grafo não orientado
+    // Grafo ciclo de 5 vértices: C5
+    inserir_aresta(grafo_coloracao, 1, 2);
+    inserir_aresta(grafo_coloracao, 2, 3);
+    inserir_aresta(grafo_coloracao, 3, 4);
+    inserir_aresta(grafo_coloracao, 4, 5);
+    inserir_aresta(grafo_coloracao, 5, 1);
+    
+    printf("Grafo para coloracao (Ciclo C5):\n");
+    exibir(grafo_coloracao);
+    
+    int num_cores_gulosa = 0;
+    coloracao_gulosa(grafo_coloracao, &num_cores_gulosa);
+    
+    int num_cores_wp = 0;
+    coloracao_welsh_powell(grafo_coloracao, &num_cores_wp);
+    
+    if (eh_bipartido2(grafo_coloracao)) {
+        printf("\nO grafo C5 eh bipartido.\n");
+    } else {
+        printf("\nO grafo C5 nao eh bipartido.\n");
+    }
+    
+    GrafoLista* grafo_bipartido_ex = criar_grafo(4, 0); // Grafo não orientado
+    // Grafo bipartido (Ciclo de 4 vértices: C4)
+    inserir_aresta(grafo_bipartido_ex, 1, 2);
+    inserir_aresta(grafo_bipartido_ex, 2, 3);
+    inserir_aresta(grafo_bipartido_ex, 3, 4);
+    inserir_aresta(grafo_bipartido_ex, 4, 1);
+    
+    printf("\nGrafo bipartido para teste (Ciclo C4):\n");
+    exibir(grafo_bipartido_ex);
+    
+    coloracao_gulosa(grafo_bipartido_ex, &num_cores_gulosa);
+    coloracao_welsh_powell(grafo_bipartido_ex, &num_cores_wp);
+    
+    if (eh_bipartido2(grafo_bipartido_ex)) {
+        printf("\nO grafo C4 eh bipartido.\n");
+    } else {
+        printf("\nO grafo C4 nao eh bipartido.\n");
+    }
     for(int i = 0; i < TAMANHO_GRAFO3; i++){
         free(componentes[i]);
     }
@@ -284,6 +327,8 @@ int main(){
     liberar_grafo(&grafo_nao_direcionado);
     liberar_grafo(&grafo_nao_direcionado2);
     liberar_grafo(&grafo_planar_12);
+    liberar_grafo(&grafo_coloracao);
+    liberar_grafo(&grafo_bipartido_ex);
 
     return 0;
 }
