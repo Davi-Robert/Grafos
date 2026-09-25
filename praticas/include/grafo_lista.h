@@ -21,12 +21,12 @@ void remover_arco(GrafoLista* grafo, int u, int v);
 int grau(GrafoLista* grafo, int vertice);
 int sao_adjacentes(GrafoLista* grafo, int u, int v);
 void exibir(GrafoLista* grafo);
-// void resetar_cor(GrafoLista* grafo);
 void liberar_grafo(GrafoLista** grafo);
 
 int eh_dag(GrafoLista *grafo);
 int* ordenacao_topologica_kahn(GrafoLista *grafo);
 No** ordenacao_topologica_dfs(GrafoLista *grafo);
+
 
 
 #endif

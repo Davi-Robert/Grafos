@@ -201,9 +201,48 @@ int main(){
     if(!ordenacao_kahn2)printf("O grafo possui um circulo");
     else for(int i = 0; i < grafo_direcionado2->capacidade; i++) printf("[%d]",ordenacao_kahn2[i]);
     puts("");
+
+    printf("\n\n---------------------------- Pratica 04 ----------------------------\n\n");
+
+    int TAMANHO_GRAFO3 = 7;
+    GrafoLista* grafo_direcionado3 = criar_grafo(TAMANHO_GRAFO3,1);
     
+    inserir_arco(grafo_direcionado3,1,2);
+    inserir_arco(grafo_direcionado3,2,7);
+    inserir_arco(grafo_direcionado3,2,6);
+    inserir_arco(grafo_direcionado3,2,3);
+    inserir_arco(grafo_direcionado3,3,4);
+    inserir_arco(grafo_direcionado3,4,3);
+    inserir_arco(grafo_direcionado3,5,3);
+    inserir_arco(grafo_direcionado3,5,6);
+    inserir_arco(grafo_direcionado3,6,5);
+    inserir_arco(grafo_direcionado3,7,6);
+    inserir_arco(grafo_direcionado3,7,1);
+    printf("grafo direcionado 3:\n");
+    exibir(grafo_direcionado3);
+    
+    printf("DFS ARTICULAÇÕES\n");
+    int** componentes = (int**)malloc(sizeof(int*) * TAMANHO_GRAFO3);
+    for(int i = 0; i < TAMANHO_GRAFO3; i++){
+        componentes[i] = (int*)malloc(sizeof(int) * TAMANHO_GRAFO3);
+        for(int j = 0; j < TAMANHO_GRAFO3; j++) componentes[i][j] = -1;
+    }
+    int* low = (int*)calloc(TAMANHO_GRAFO3, sizeof(int));
+
+    int qtd_compontes = dfs_articulacoes(grafo_direcionado3,componentes,low);
+    
+    for(int i = 0; i < TAMANHO_GRAFO3; i++){
+        for(int j = 0; j < qtd_compontes; j++) printf("[%d]",componentes[i][j]);
+        puts("");
+    }
 
 
+
+    for(int i = 0; i < TAMANHO_GRAFO3; i++){
+        free(componentes[i]);
+    }
+    free(componentes);
+    free(low);
     liberar_grafo(&grafo_direcionado);
     liberar_grafo(&grafo_nao_direcionado);
     liberar_grafo(&grafo_nao_direcionado2);

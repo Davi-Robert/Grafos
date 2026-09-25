@@ -3,6 +3,9 @@
 
 #include "../include/grafo_matriz.h"
 
+// ---------------------------------------- funções pratica 01 ----------------------------------------
+
+
 GrafoMatriz* matriz_criar_grafo(int capacidade){
     GrafoMatriz *g = (GrafoMatriz*)malloc(sizeof(GrafoMatriz));
     if(!g){

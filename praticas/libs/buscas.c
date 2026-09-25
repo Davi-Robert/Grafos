@@ -8,9 +8,10 @@
 // funções complementares de outras funções:
 int dfs_verificacao_circulo(GrafoLista* grafo, int u, int* visitado); // auxilia a função "tem_circulo()"
 void dfs_simples(GrafoLista* grafo, int u, int* visitado); // auxilia a função "contar_componentes()"
+int dfs_tarjan(GrafoLista* grafo, int u, int *visitado, Pilha* pilha, int **componentes, int* descoberto, int* low, int* idx_componetes, int* idx_visto);
+int min(int number1, int number2);
 
-
-// funções das atividades:
+// ---------------------------------------- funções pratica 02 ----------------------------------------
 
 void dfs_total(GrafoLista* grafo, int* visitado, Pilha* pilha, int* tempo_entrada, int* tempo_saida){
     int tempo_atual = 0;
@@ -122,6 +123,36 @@ int contar_componentes(GrafoLista* grafo){
 }
 
 
+// ---------------------------------------- funções pratica 04 ----------------------------------------
+
+
+int dfs_articulacoes(GrafoLista* grafo, int** componetes, int *low){
+    if(!grafo) return -1;
+    if(grafo->eh_orientado == 0) return -1;
+    Pilha* pilha = criar_pilha();
+
+    int *visitado = (int*)calloc(grafo->capacidade,sizeof(int));
+    int *descoberto = calloc(grafo->capacidade, sizeof(int));
+    int idx_compontente = 0;
+    int idx_visto = 0;
+    for(int i = 0 ; i < grafo->capacidade; i++) descoberto[i] = -1;
+
+    
+    for(int i = 0 ; i < grafo->capacidade; i++){
+        if(descoberto[i] != -1 ) continue;
+        dfs_tarjan(grafo, i+1, visitado, pilha,componetes, descoberto, low, &idx_compontente, &idx_visto);
+    }
+    
+    free(descoberto);
+    free(visitado);
+    return idx_compontente;
+}
+No** detectar_pontes(GrafoLista* grafo);
+int eh_planar_euler(GrafoLista *grafo);
+
+
+
+// ---------------------------------------- funções auxiliares ----------------------------------------
 
 
 void dfs_simples(GrafoLista* grafo, int u, int* visitado){
@@ -149,4 +180,49 @@ int dfs_verificacao_circulo(GrafoLista* grafo, int u, int* visitado){
         aux = aux->prox;
     }
     return 0;
+}
+
+int dfs_tarjan(GrafoLista* grafo, int u, int *visitado, Pilha* pilha, int **componentes, int* descoberto, int *low, int* idx_componetes, int *idx_visto){
+    if(!grafo)return-1;
+    descoberto[u-1] = ++(*idx_visto);
+    int u2 = descoberto[u -1];
+    No* aux = grafo->lista[u-1];
+    push(pilha, descoberto[u-1]);
+    int minimum_vertex = u2;
+    while(aux){
+        int v = aux->vertice;
+        if(descoberto[v -1] == -1){
+            low[u2 - 1] = u2;
+            dfs_tarjan(grafo,aux->vertice,visitado,pilha,componentes,descoberto,low,idx_componetes, idx_visto);
+            int prev;
+            for(int i = 0; i < grafo->capacidade; i++){
+                if(descoberto[i] == u2 -1)prev = i+1;
+            }
+            minimum_vertex = min(descoberto[prev], u2);
+            low[u2 -1] = minimum_vertex;
+        }else{
+            return descoberto[u-1];
+        }
+        aux = aux->prox;
+    }
+    
+
+    if(low[u2 -1] == u2){
+        int retirar_valor = -1;
+        int i = 0;
+        while(retirar_valor != minimum_vertex){
+            retirar_valor = pop(pilha);
+            componentes[*idx_componetes][i] = retirar_valor;
+            i++;
+        }
+        (*idx_componetes)++;
+    }
+    return descoberto[u-1];
+}
+
+
+
+int min(int number1, int number2){
+    if(number1 < number2) return number1;
+    return number2;
 }

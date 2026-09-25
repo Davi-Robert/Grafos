@@ -4,6 +4,9 @@
 #include<stdio.h>
 #include<stdlib.h>
 
+// ---------------------------------------- funções auxiliares FILA ----------------------------------------
+
+
 Fila* criar_fila(){
     Fila* f = (Fila*)malloc(sizeof(Fila));
     if(!f) return NULL;

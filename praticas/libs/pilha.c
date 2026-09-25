@@ -4,6 +4,9 @@
 #include<stdio.h>
 #include<stdlib.h>
 
+// ---------------------------------------- funções auxiliares PILHA ----------------------------------------
+
+
 Pilha* criar_pilha(){
     Pilha* p = (Pilha*)malloc(sizeof(Pilha));
     if(!p) return NULL;

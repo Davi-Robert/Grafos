@@ -10,7 +10,7 @@ No* duplicar_no(No* no);
 GrafoLista* duplicar_grafo(GrafoLista* grafo);
 
 
-// funções das praticas:
+// ---------------------------------------- funções pratica 01 ----------------------------------------
 
 
 // se eh_orientado = 1, não poderá realizar as operações de grafos não orientados, a escolha padrão é grafo não orientado
@@ -261,7 +261,7 @@ void liberar_grafo(GrafoLista** grafo){
 }
 
 
-// ----------------------------------------------------------------------------------------------
+// ---------------------------------------- funções pratica 03 ----------------------------------------
 
 
 int eh_dag(GrafoLista *grafo){
@@ -274,17 +274,16 @@ int eh_dag(GrafoLista *grafo){
 int* ordenacao_topologica_kahn(GrafoLista *grafo){
     if(!grafo){printf("grafo não recebido\n");return NULL;}
     if(!eh_dag(grafo))return NULL;
-    GrafoLista *grafo_duplicata = duplicar_grafo(grafo);
     int idx_lista = 0;
     
-    int *graus_entrada = (int*)calloc(grafo_duplicata->capacidade, sizeof(int));
-    int *graus_saida = (int*)calloc(grafo_duplicata->capacidade, sizeof(int));
-    int *visitado = (int*)calloc(grafo_duplicata->capacidade, sizeof(int));
-    int* indices_ordenados = (int*)calloc(grafo_duplicata->capacidade, sizeof(int));
+    int *graus_entrada = (int*)calloc(grafo->capacidade, sizeof(int));
+    int *graus_saida = (int*)calloc(grafo->capacidade, sizeof(int));
+    int *visitado = (int*)calloc(grafo->capacidade, sizeof(int));
+    int* indices_ordenados = (int*)calloc(grafo->capacidade, sizeof(int));
         
     Fila* fila = criar_fila(); // vai conter o conteúdo dos vertices com zero de grau de entrada;
     for(int i = 0; i < grafo->capacidade; i ++){
-        grau_direcionado(grafo_duplicata,i + 1,graus_entrada + i,graus_saida + i);
+        grau_direcionado(grafo,i + 1,graus_entrada + i,graus_saida + i);
         if(graus_entrada[i] == 0)enqueue(fila, i+1);
     }
     
@@ -292,13 +291,12 @@ int* ordenacao_topologica_kahn(GrafoLista *grafo){
         int v = dequeue(fila);
         indices_ordenados[idx_lista++] = v;
         
-        No* aux = grafo_duplicata->lista[v -1]; 
+        No* aux = grafo->lista[v -1]; 
         while(aux){
             int vertice_atual = aux->vertice;
             if(!visitado[vertice_atual -1]){
                 aux = aux->prox;
-                remover_arco(grafo_duplicata,v,vertice_atual);
-                grau_direcionado(grafo_duplicata,vertice_atual,&graus_entrada[vertice_atual -1],&graus_saida[vertice_atual -1]);
+                graus_entrada[vertice_atual - 1]--;
                 if(graus_entrada[vertice_atual -1] == 0){
                     enqueue(fila, vertice_atual);
                 }
@@ -310,7 +308,6 @@ int* ordenacao_topologica_kahn(GrafoLista *grafo){
     }
     
     free(visitado); free(graus_entrada); free(graus_saida);
-    liberar_grafo(&grafo_duplicata);
     liberar_fila(&fila);
     return indices_ordenados;
 }
@@ -363,7 +360,9 @@ No** ordenacao_topologica_dfs(GrafoLista *grafo){
 
 
 
-// ----------------------------------------------------------------------------------------------
+
+// // ---------------------------------------- funções auxiliares ----------------------------------------
+
 
 No* duplicar_no(No* no){
     if(!no) return NULL;
