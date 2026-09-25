@@ -13,5 +13,6 @@ void push(Pilha* pilha, int dado);
 int pop(Pilha* pilha);
 int top(Pilha* pilha);
 void liberar_pilha(Pilha **pilha);
+int LIFO_search_value(Pilha* pilha, int value);
 
 #endif

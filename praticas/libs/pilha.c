@@ -46,6 +46,16 @@ int top(Pilha* pilha){
     return pilha->topo;
 }
 
+int LIFO_search_value(Pilha* pilha, int value){
+    if(!pilha) return 0;
+    No* aux = pilha->dados;
+    while(aux){
+        if(aux->vertice == value) return 1;
+        aux = aux->prox;
+    }
+    return 0;
+}
+
 void liberar_pilha(Pilha **pilha){
     if(!pilha) return;
     No* aux = (*pilha)->dados;

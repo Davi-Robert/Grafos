@@ -337,7 +337,10 @@ No** ordenacao_topologica_dfs(GrafoLista *grafo){
         
         //cancela o maior tempo saida mas mantem o indice
         tempo_saida[maior] = 0;
-        if(grafo->lista[maior] == NULL) continue;
+        if(grafo->lista[maior] == NULL){
+            lista[i] = NULL;
+            continue;
+        }
         
         //duplica toda a cadeia de nós
         no = duplicar_no(grafo->lista[maior]);
@@ -366,7 +369,7 @@ No** ordenacao_topologica_dfs(GrafoLista *grafo){
 
 No* duplicar_no(No* no){
     if(!no) return NULL;
-    No* new_no = (No*)malloc(sizeof(no));
+    No* new_no = (No*)malloc(sizeof(No));
     if(!new_no){perror("Erro ao alocar memória para a duplicata de nó");exit(1);}
     new_no->vertice = no->vertice;
     new_no->prox = no->prox;

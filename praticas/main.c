@@ -229,10 +229,11 @@ int main(){
     }
     int* low = (int*)calloc(TAMANHO_GRAFO3, sizeof(int));
 
+
     int qtd_compontes = dfs_articulacoes(grafo_direcionado3,componentes,low);
     
-    for(int i = 0; i < TAMANHO_GRAFO3; i++){
-        for(int j = 0; j < qtd_compontes; j++) printf("[%d]",componentes[i][j]);
+    for(int i = 0; i < qtd_compontes; i++){
+        for(int j = 0; j < TAMANHO_GRAFO3 ; j++) printf("[%d]",componentes[i][j]);
         puts("");
     }
 

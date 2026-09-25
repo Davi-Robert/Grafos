@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -std=c11 -Iinclude -lm
+CFLAGS = -Wall -Wextra -Werror -std=c11  -Iinclude -lm
 TARGET = main
 SRC = ./*.c
 LIBS = libs/*.c
