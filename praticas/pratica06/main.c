@@ -24,24 +24,37 @@ int main(){
 
     GrafoListaPonderado *g = init_graph(6);
 
-    insert_edge(g,1,2,5);
-    insert_edge(g,1,6,4);
+    insert_edge(g,1,2,4);
+    insert_edge(g,1,3,2);
 
-    insert_edge(g,2,5,3);
+    insert_edge(g,2,1,4);
+    insert_edge(g,2,3,1);
+    insert_edge(g,2,4,5);
+    insert_edge(g,2,5,8);
 
-    insert_edge(g,3,4,5);
-    insert_edge(g,3,2,9);
     insert_edge(g,3,1,2);
+    insert_edge(g,3,2,1);
+    insert_edge(g,3,4,4);
+    insert_edge(g,3,5,10);
 
-    insert_edge(g,4,2,8);
+    insert_edge(g,4,2,5);
+    insert_edge(g,4,3,4);
+    insert_edge(g,4,5,2);
+    insert_edge(g,4,6,1);
 
-    insert_edge(g,6,5,6);
+    insert_edge(g,5,2,8);
+    insert_edge(g,5,3,10);
+    insert_edge(g,5,4,2);
+    insert_edge(g,5,6,3);
+
+    insert_edge(g,6,5,3);
+    insert_edge(g,6,4,1);
 
 
-    int origem = 3; int destino = 2;
+    int origem = 1; int destino = 6;
     int *dist = (int*)calloc(g->capacidade,sizeof(int));
     int *pred = (int*)calloc(g->capacidade,sizeof(int));
-    dijkstra(g, 3, dist, pred);
+    dijkstra(g, origem, dist, pred);
 
     printf("distancia: \n");
     for(int i = 0; i < g->capacidade; i ++){
@@ -56,7 +69,6 @@ int main(){
 
     reconstruir_caminho(origem,destino,pred);
     puts("[NULL]");
-    
 
     return 0;
 }
