@@ -1,4 +1,4 @@
-#include "agm.h"
+#include "cobertura.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -65,44 +65,37 @@ int main(){
     insert_edge(g,6,5,3);
     insert_edge(g,6,4,1);
 
-    // 1. KRUSKAL
-    int max_arestas = 30;
-    int qtd_arestas = 0;
-    Aresta* arestas = calloc(max_arestas, sizeof(Aresta));
+    int vertices_size = 2;
+    int* cobertura = malloc(sizeof(int) * vertices_size);
+    cobertura[0] = 3;
+    cobertura[1] = 4;
+    
+    int is_cover = eh_cobertura(g, cobertura, vertices_size);
+    printf("Conjunto {3, 4}: %s\n", is_cover ? "É cobertura" : "Não é cobertura");
+    free(cobertura);
 
-    for(int i = 0; i < g->capacidade; i++){
-        int u = i + 1;
-        No* no = g->lista[i];
-        while(no != NULL){
-            int v = no->vertice;
-            if(u < v){
-                arestas[qtd_arestas].u = u;
-                arestas[qtd_arestas].v = v;
-                arestas[qtd_arestas].peso = no->distancia;
-                qtd_arestas++;
-            }
-            no = no->proximo;
-        }
+    // Teste cobertura gulosa
+    int *cob_gulosa = NULL;
+    int tam_gulosa = cobertura_gulosa(g, &cob_gulosa);
+    printf("\n--- Cobertura Gulosa ---\n");
+    printf("Tamanho: %d\nVértices: ", tam_gulosa);
+    for (int i = 0; i < tam_gulosa; i++) {
+        printf("%d ", cob_gulosa[i]);
     }
+    printf("\nVálida: %s\n", eh_cobertura(g, cob_gulosa, tam_gulosa) ? "Sim" : "Não");
+    free(cob_gulosa);
 
-    int custo_kruskal = kruskal(g, arestas, qtd_arestas);
-    printf("=== KRUSKAL ===\n");
-    printf("Custo da AGM: %d\n\n", custo_kruskal);
-
-    // 2. PRIM (com identificação das arestas escolhidas pelo corte)
-    Aresta* arestas_prim = malloc((n - 1) * sizeof(Aresta));
-    int custo_prim = prim(g, 1, arestas_prim);
-
-    printf("=== PRIM (Propriedade do Corte) ===\n");
-    printf("Custo da AGM: %d\n", custo_prim);
-    printf("Arestas selecionadas para a AGM:\n");
-    for(int i = 0; i < n - 1; i++){
-        printf("  (%d - %d) peso: %d\n", arestas_prim[i].u, arestas_prim[i].v, arestas_prim[i].peso);
+    // Teste cobertura mínima com backtracking
+    int *cob_bt = NULL;
+    int tam_bt = cobertura_minima_bt(g, &cob_bt);
+    printf("\n--- Cobertura Mínima (Backtracking) ---\n");
+    printf("Tamanho: %d\nVértices: ", tam_bt);
+    for (int i = 0; i < tam_bt; i++) {
+        printf("%d ", cob_bt[i]);
     }
+    printf("\nVálida: %s\n", eh_cobertura(g, cob_bt, tam_bt) ? "Sim" : "Não");
+    free(cob_bt);
 
-    free(arestas_prim);
-    free(arestas);
     free_graph(g);
-
     return 0;
 }
